@@ -1,95 +1,127 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { Canvas } from "@react-three/fiber";
+import { Html, OrbitControls } from "@react-three/drei";
+import WheelOfFortune from "./components/Wheel";
+import { useEffect, useState } from "react";
+import Modal from "react-modal";
+import styles from "./page.module.css";
+const customStyles = {
+	content: {
+		top: "50%",
+		left: "50%",
+		right: "auto",
+		bottom: "auto",
+		marginRight: "-50%",
+		transform: "translate(-50%, -50%)",
+		borderRadius: "1rem",
+		boxShadow: "0 0 20px #fff",
+	},
+};
+
+function Scene({ texts, setSelectedTriangle }) {
+	return (
+		<>
+			<OrbitControls />
+			<WheelOfFortune texts={texts} setSelectedTriangle={setSelectedTriangle} />
+
+			{/* <ambientLight color="black" intensity={1000} position={[0, 0, 0]} /> */}
+			{/* <spotLight
+				color={[1, 0.25, 0.7]}
+				intensity={400}
+				angle={0.6}
+				penumbra={0.5}
+				position={[5, 5, 2]}
+				castShadow
+			/>
+			<spotLight
+				color={[0.14, 0.5, 1]}
+				intensity={400}
+				angle={0.6}
+				penumbra={0.5}
+				position={[-5, 5, 0]}
+				castShadow
+				shadow-bias={-0.0001}
+			/> */}
+		</>
+	);
+}
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+	const [selectedTriangle, setSelectedTriangle] = useState(0);
+	const [modalIsOpen, setIsOpen] = useState(false);
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+	const texts = [
+		"Get 20% off on gaming",
+		"Buy one get one FREE gaming",
+		"Get side table free with furniture order",
+		"Get flat ₹100 off!",
+		"Get 10% off on appliances",
+		"Get flat ₹400 off!",
+		"Get flat 30% off",
+		"Get Oculus Quest 2 for 1 day",
+	];
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+	function openModal() {
+		setIsOpen(true);
+	}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+	function closeModal() {
+		setIsOpen(false);
+		setSelectedTriangle(null);
+	}
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
+	useEffect(() => {
+		if (selectedTriangle !== null) openModal();
+	}, [selectedTriangle]);
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+	return (
+		<div className="main">
+			<Canvas
+				camera={{
+					position: [0, 0, 7],
+				}}
+			>
+				<Scene
+					selectedTriangle={selectedTriangle}
+					setSelectedTriangle={setSelectedTriangle}
+					texts={texts}
+				/>
+			</Canvas>
+			<div className="stage">
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+				<div className="layer"></div>
+			</div>
+			<Modal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				style={customStyles}
+				contentLabel="Example Modal"
+			>
+				<div className={styles.modal}>
+					<h4>Congratulations!</h4>
+					<p>
+						You have won: <br /> <span> {texts[selectedTriangle]} </span>
+					</p>
+				</div>
+			</Modal>
+		</div>
+	);
 }
