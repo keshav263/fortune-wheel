@@ -1,0 +1,236 @@
+{
+	"accessors": [
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 209,
+			"max": [0.2852766513824463, 1.1306406259536743, 0.03195897117257118],
+			"min": [-0.2992648482322693, 0.0016072677681222558, -0.13510888814926147],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 2,
+			"byteOffset": 2508,
+			"componentType": 5126,
+			"count": 209,
+			"max": [0.25226205587387085, 0.2776053547859192, 0.9999956488609314],
+			"min": [-0.24993792176246643, -0.34311026334762573, 0.9124900102615356],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 209,
+			"max": [
+				-0.9651368260383606, 0.009173211641609669, 0.2532031238079071, -1.0
+			],
+			"min": [
+				-0.9998590350151062, -0.05071723088622093, -0.261737197637558, -1.0
+			],
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 209,
+			"max": [0.6195995211601257, 0.507710337638855],
+			"min": [0.4081028401851654, 0.09821554273366928],
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 1,
+			"byteOffset": 1672,
+			"componentType": 5126,
+			"count": 209,
+			"max": [0.6195995211601257, 0.507710337638855],
+			"min": [0.4081028401851654, 0.09821554273366928],
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 1,
+			"byteOffset": 3344,
+			"componentType": 5126,
+			"count": 209,
+			"max": [0.6195995211601257, 0.507710337638855],
+			"min": [0.4081028401851654, 0.09821554273366928],
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 1,
+			"byteOffset": 5016,
+			"componentType": 5126,
+			"count": 209,
+			"max": [0.6195995211601257, 0.507710337638855],
+			"min": [0.4081028401851654, 0.09821554273366928],
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 0,
+			"componentType": 5125,
+			"count": 1080,
+			"type": "SCALAR"
+		}
+	],
+	"asset": {
+		"extras": {
+			"author": "dravid1852 (https://sketchfab.com/dravid1852)",
+			"license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+			"source": "https://sketchfab.com/3d-models/leaf-42f3db9df1f14492852b11574daeeb3e",
+			"title": "Leaf"
+		},
+		"generator": "Sketchfab-14.10.0",
+		"version": "2.0"
+	},
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 4320,
+			"name": "floatBufferViews",
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 6688,
+			"byteOffset": 4320,
+			"byteStride": 8,
+			"name": "floatBufferViews",
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 5016,
+			"byteOffset": 11008,
+			"byteStride": 12,
+			"name": "floatBufferViews",
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3344,
+			"byteOffset": 16024,
+			"byteStride": 16,
+			"name": "floatBufferViews",
+			"target": 34962
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 19368,
+			"uri": "leaf.bin"
+		}
+	],
+	"images": [
+		{
+			"uri": "textures/Leaf_baseColor.png"
+		},
+		{
+			"uri": "textures/Leaf_metallicRoughness.png"
+		},
+		{
+			"uri": "textures/Leaf_normal.png"
+		}
+	],
+	"materials": [
+		{
+			"alphaMode": "MASK",
+			"doubleSided": true,
+			"name": "Leaf",
+			"normalTexture": {
+				"index": 2
+			},
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0.0,
+				"metallicRoughnessTexture": {
+					"index": 1
+				}
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Object_0",
+			"primitives": [
+				{
+					"attributes": {
+						"NORMAL": 1,
+						"POSITION": 0,
+						"TANGENT": 2,
+						"TEXCOORD_0": 3,
+						"TEXCOORD_1": 4,
+						"TEXCOORD_2": 5,
+						"TEXCOORD_3": 6
+					},
+					"indices": 7,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"nodes": [
+		{
+			"children": [1],
+			"matrix": [
+				1.0, 0.0, 0.0, 0.0, 0.0, 2.220446049250313e-16, -1.0, 0.0, 0.0, 1.0,
+				2.220446049250313e-16, 0.0, 0.0, 0.0, 0.0, 1.0
+			],
+			"name": "Sketchfab_model"
+		},
+		{
+			"children": [2],
+			"name": "root"
+		},
+		{
+			"children": [3],
+			"matrix": [
+				1.0, 0.0, 0.0, 0.0, 0.0, 2.220446049250313e-16, 1.0, 0.0, 0.0, -1.0,
+				2.220446049250313e-16, 0.0, 0.0, 0.0, 0.0, 1.0
+			],
+			"name": "GLTF_SceneRootNode"
+		},
+		{
+			"children": [4],
+			"matrix": [
+				1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
+				-1.487360954284668, 0.0, 1.2633459568023682, 1.0
+			],
+			"name": "Leaf_0"
+		},
+		{
+			"mesh": 0,
+			"name": "Object_4"
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"name": "Sketchfab_Scene",
+			"nodes": [0]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"sampler": 0,
+			"source": 2
+		}
+	]
+}

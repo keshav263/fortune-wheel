@@ -1,29 +1,29 @@
 // WheelOfFortune.js
 "use client";
-import React, { useRef, useState, Suspense } from "react";
+import React, { useRef, useState, Suspense, useEffect } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
 	Center,
 	RoundedBox,
 	Text,
 	Text3D,
+	useHelper,
 	useTexture,
 } from "@react-three/drei";
 import * as THREE from "three";
 import Leaf from "./Leaf";
-const WheelOfFortune = ({ texts, setSelectedTriangle }) => {
+const WheelOfFortune = ({ texts, showResult }) => {
 	const [spinning, setSpinning] = useState(false);
 	const discRef = useRef();
-	const [rotationAngle, setRotationAngle] = useState(0); // Add state to track rotation angle
 	const coneRef = useRef();
-	const { viewport } = useThree();
+	const lightRef = useRef();
+	const anotherLightRef = useRef();
 	let spinSpeed = useRef(1);
-
-	const viewportWidthInPixels = (viewport.width * window.innerWidth) / 2;
 
 	useFrame(() => {
 		if (discRef.current && spinning) {
-			spinSpeed.current *= 0.98; // Adjust the decay factor as needed
+			spinSpeed.current =
+				spinSpeed.current * (Math.random() * (0.99 - 0.95) + 0.95); // Adjust the decay factor as needed
 			discRef.current.rotation.z += spinSpeed.current;
 
 			if (Math.abs(spinSpeed.current) < 0.001) {
@@ -31,8 +31,6 @@ const WheelOfFortune = ({ texts, setSelectedTriangle }) => {
 				setSpinning(false);
 				checkConeIntersection();
 			}
-
-			setRotationAngle(discRef.current.rotation.z);
 		}
 	});
 
@@ -51,47 +49,94 @@ const WheelOfFortune = ({ texts, setSelectedTriangle }) => {
 				10,
 				"black" // Green color
 			);
-			discRef.current.add(arrowHelper);
+			// discRef.current.add(arrowHelper);
 
+			// console.log({ coneTipWorldPosition });
 			const raycaster = new THREE.Raycaster(coneTipWorldPosition, direction);
 
 			// Check for intersections with each triangle
 			const intersections = texts.map((text, index) => {
 				const triangle = discRef.current.getObjectByName(`triangle_${index}`); // Assuming you name your triangles as 'triangle_0', 'triangle_1', and so on
-
+				// console.log({ triangle });
 				const intersectedObjects = [triangle];
 				return raycaster.intersectObjects(intersectedObjects);
 			});
 
+			// console.log({ intersections });
 			// Find the first intersection (closest triangle)
 			const firstIntersection = intersections.find(
 				(intersection) => intersection.length > 0
 			);
 
+			console.log({ firstIntersection });
+
 			if (firstIntersection) {
 				const { i, text } = firstIntersection[0].object.userData;
 
-				setSelectedTriangle((i + 4) % 8);
+				// Now you have the index of the triangle the cone is pointing to
+				// console.log("Cone is pointing to triangle index:", (i + 4) % 8);
+
+				// console.log({ text });
+
+				showResult({ index: (i + 4) % 8 });
 
 				// You can perform additional actions based on the identified triangle index
 			}
 		}
 	};
 
+	// useHelper(lightRef, THREE.SpotLightHelper, "green");
+	// useHelper(anotherLightRef, THREE.SpotLightHelper, "green");
+
+	const planeTexture = useTexture("/textures/texture.jpeg");
+
+	planeTexture.wrapS = THREE.RepeatWrapping;
+	planeTexture.wrapT = THREE.RepeatWrapping;
+	planeTexture.repeat.set(6, 6);
+
 	return (
 		<>
 			{/* <axesHelper args={[10, 10, 10]} /> */}
+			<spotLight
+				ref={lightRef}
+				castShadow
+				position={[0, 6, 2]}
+				rotateX={2}
+				intensity={100}
+				color="gold"
+			/>
+			<spotLight
+				ref={anotherLightRef}
+				castShadow
+				position={[0, -8, 4]}
+				rotateX={2}
+				intensity={100}
+				color="white"
+			/>
+
 			<group ref={discRef}>
 				<Disc spinning={spinning} />
 				{texts.map((text, index) => (
 					<TriangleOnCircle
-						text={text}
+						text={text.description}
 						key={index}
 						index={index}
 						total={texts.length}
 					/>
 				))}
 			</group>
+			<mesh receiveShadow position={[0, -3.3, 0]} rotation-x={Math.PI / 2}>
+				<planeGeometry args={[50, 50]} />
+				<meshStandardMaterial
+					map={planeTexture}
+					bumpMap={planeTexture}
+					bumpScale={0.1}
+					roughness={0.65}
+					metalness={0.75}
+					side={THREE.DoubleSide}
+					color="#fff"
+				/>
+			</mesh>
 			<SpinButton
 				spinWheel={() => {
 					setSpinning(true);
@@ -104,7 +149,7 @@ const WheelOfFortune = ({ texts, setSelectedTriangle }) => {
 };
 
 const EarthModel = () => {
-	const texture = useTexture("/earth.jpeg");
+	const texture = useTexture("/assets/earth.jpeg");
 	const earthRef = useRef();
 
 	useFrame(({ clock }) => {
@@ -124,22 +169,19 @@ const EarthModel = () => {
 };
 
 const Disc = () => {
-	const texture = useTexture("/wood.jpg");
+	const texture = useTexture("/assets/wood.jpg");
+	const dots = useRef([]);
 	texture.wrapS = 2;
 	texture.wrapT = 2;
 
 	const createGoldenDot = (position) => {
-		return (
-			<mesh position={position}>
-				<sphereGeometry args={[0.06, 36, 36]} />
-				<meshBasicMaterial color="gold" />
-			</mesh>
-		);
+		const geometry = new THREE.SphereGeometry(0.1, 36, 36);
+		const material = new THREE.MeshBasicMaterial({ color: "gold" });
+		const dot = new THREE.Mesh(geometry, material);
+		dot.position.set(...position);
+		return dot;
 	};
 
-	const dots = [];
-
-	// Create golden dots around the sphere at the edges
 	const numDots = 20;
 	const radius = 3.2;
 	for (let i = 0; i < numDots; i++) {
@@ -147,28 +189,46 @@ const Disc = () => {
 		const x = radius * Math.cos(angle);
 		const y = radius * Math.sin(angle);
 		const dotPosition = [x, y, 0.1];
-		const dot = createGoldenDot(dotPosition);
-		dots.push(dot);
+		dots.current.push(createGoldenDot(dotPosition));
 	}
+
+	// Animate the dots
+	useFrame((state, delta) => {
+		dots.current.forEach((dot, index) => {
+			const blinkSpeed = 2; // Adjust blinking speed as needed
+			const time = state.clock.elapsedTime * blinkSpeed;
+			const intensity = Math.abs(Math.sin(time + 3 + index * 0.1)); // Adjust frequency with index
+
+			// Interpolate between white and gold based on intensity
+			const color = new THREE.Color().lerpColors(
+				new THREE.Color("white"),
+				new THREE.Color("yellow"),
+				intensity
+			);
+			dot.material.color.set(color);
+		});
+	});
 
 	return (
 		<group>
-			<axesHelper />
+			{/* <axesHelper /> */}
 
 			<mesh position-z={0} rotation-x={Math.PI / 2}>
 				<cylinderGeometry args={[3.4, 3.4, 0.1, 128, 32]} />
-				<meshBasicMaterial
+				<meshStandardMaterial
 					// map={texture}
-					color="#214626"
+					color="#971D1C"
 					side={THREE.DoubleSide}
 				/>
 			</mesh>
 
-			{dots}
+			{dots.current.map((dot, index) => (
+				<primitive key={index} object={dot} />
+			))}
 
 			<mesh position-z={0.2} rotation-x={Math.PI / 2}>
 				<cylinderGeometry args={[0.35, 0.35, 0.1, 128, 32]} />
-				<meshBasicMaterial color="#214626" />
+				<meshStandardMaterial color="#971D1C" />
 			</mesh>
 			<mesh position-z={0.1}>
 				<EarthModel />
@@ -210,16 +270,7 @@ const TriangleOnCircle = ({ index, total, text }) => {
 	};
 
 	const geometry = new THREE.ExtrudeGeometry(roundedTriangle, extrudeSettings);
-	const colors = [
-		"#cf3030", // Tomato
-		"#e58432", // Gold
-		"#40a09b", // OrangeRed
-		"#cf3030", // Tomato
-		"#e58432", // Gold
-		"#40a09b", // OrangeRed
-		"#e58432", // Gold
-		"#40a09b", // Cyan
-	];
+
 	const colorIndex = index % colors.length; // Use modulo to cycle through colors
 	const textPosition = calculateTextPosition(index, total, radius);
 
@@ -230,7 +281,10 @@ const TriangleOnCircle = ({ index, total, text }) => {
 				geometry={geometry}
 				name={`triangle_${index}`}
 			>
-				<meshBasicMaterial color={colors[colorIndex]} side={THREE.DoubleSide} />
+				<meshStandardMaterial
+					color={colors[colorIndex]}
+					side={THREE.DoubleSide}
+				/>
 			</mesh>
 			<Text
 				position={textPosition}
@@ -239,7 +293,7 @@ const TriangleOnCircle = ({ index, total, text }) => {
 				anchorY="middle"
 				fontSize={text.length > 30 ? 0.26 : 0.3} // Adjust the font size based on text length
 				maxWidth={1.5}
-				font="/LuckiestGuy-Regular.ttf"
+				font="/assets/LuckiestGuy-Regular.ttf"
 				textAlign="center"
 				fontWeight={700}
 			>
@@ -264,10 +318,15 @@ const SpinButton = ({ spinWheel }) => {
 		}
 	});
 
+	const planeTexture = useTexture("/textures/texture.jpeg");
+	planeTexture.wrapS = THREE.RepeatWrapping;
+	planeTexture.wrapT = THREE.RepeatWrapping;
+	planeTexture.repeat.set(6, 6);
+
 	return (
 		<group
-			position={[0, -4.5, 0]}
-			rotation-x={-0.3}
+			position={[0, -3.2, 2]}
+			rotation-x={-Math.PI / 2 + 0.2}
 			onClick={spinWheel}
 			ref={ref}
 		>
@@ -278,33 +337,22 @@ const SpinButton = ({ spinWheel }) => {
 				bevelSegments={4} // The number of bevel segments. Default is 4, setting it to 0 removes the bevel, as a result the texture is applied to the whole geometry.
 				creaseAngle={0.4} // Smooth normals everywhere except faces that meet at an angle greater than the crease angle
 			>
-				<meshBasicMaterial color="#5216AA" />
+				<meshStandardMaterial
+					color="gold"
+					map={planeTexture}
+					bumpMap={planeTexture}
+					bumpScale={0.1}
+					roughness={0.65}
+					metalness={0.75}
+				/>
 			</RoundedBox>
-			{/* 
-			<Center rotation={[0, 0, 0]}>
-				<Text3D
-					position={[0, 0, 0]}
-					curveSegments={32}
-					bevelEnabled
-					bevelSize={0.04}
-					bevelThickness={0.1}
-					height={0.5}
-					lineHeight={0.5}
-					letterSpacing={-0.06}
-					size={1}
-					font="/Inter_Bold.json"
-				>
-					{`Spin to Win`}
-					<meshNormalMaterial />
-				</Text3D>
-			</Center> */}
 
 			<Center position={[0, 0, 0.15]}>
 				<Text3D
 					height={0.1}
 					lineHeight={0.5}
 					size={0.5}
-					font="/Luckiest_Guy_Regular.json"
+					font="/assets/Luckiest_Guy_Regular.json"
 				>
 					SPIN
 					<meshNormalMaterial />
@@ -317,5 +365,16 @@ const SpinButton = ({ spinWheel }) => {
 const calculateTextPosition = (index, total, radius) => {
 	return [0, -2.2, 0.22];
 };
+
+const colors = [
+	"#A0B738", // Tomato
+	"#F3B63F", // Gold
+	"#6DC5BC", // OrangeRed
+	"#A0B738", // Tomato
+	"#F3B63F", // Gold
+	"#6DC5BC",
+	"#A0B738", // Tomato
+	"#F3B63F", // Gold
+];
 
 export default WheelOfFortune;

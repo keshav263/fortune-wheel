@@ -1,30 +1,16 @@
-.ReactModalPortal {
-	> div {
-		background-color: transparent !important;
-	}
-}
-
-.main {
+.canvas {
 	width: 100%;
-	height: 100%;
-	background: radial-gradient(circle, #0077ea, #1f4f96, #1b2949, #000);
-	position: fixed;
-	top: 0;
-	left: 0;
-}
-
-body {
-	min-height: 450px;
 	height: 100vh;
-	margin: 0;
-	background: radial-gradient(circle, #0077ea, #1f4f96, #1b2949, #000);
+	/* background: radial-gradient(circle, #0077ea, #1f4f96, #1b2949, #000); */
+	background-color: black;
+	position: relative;
 }
 
 .stage {
 	height: 200px;
 	width: 100vw;
 	margin: auto;
-	position: fixed;
+	position: absolute;
 	top: 0;
 	left: 0;
 	perspective: 9999px;
@@ -60,11 +46,11 @@ body {
 
 .layer:nth-child(n + 11):after {
 	-webkit-text-stroke: 15px dodgerblue;
-	text-shadow: 6px 0 6px #00366b, 5px 5px 5px #002951, 0 6px 6px #00366b;
+	text-shadow: 6px 0 6px #971d1c, 5px 5px 5px #002951, 0 6px 6px #971d1c;
 }
 
 .layer:nth-child(n + 12):after {
-	-webkit-text-stroke: 15px #0077ea;
+	-webkit-text-stroke: 15px #971d1c;
 }
 
 .layer:last-child:after {
